@@ -9,51 +9,42 @@ local ButtonHolder = Instance.new("Frame")
 local UIListLayout = Instance.new("UIListLayout")
 local Watermark = Instance.new("TextLabel")
 
--- BUTTON FUNCTION CREATOR
-function createButton(name, desc, callback)
-	local button = Instance.new("TextButton")
-	button.Text = name
-	button.Size = UDim2.new(1, -10, 0, 40)
-	button.BackgroundColor3 = Color3.fromRGB(255, 170, 200)
-	button.BorderSizePixel = 0
-	button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	button.Font = Enum.Font.GothamBold
-	button.TextSize = 14
-	button.Parent = ButtonHolder
-	button.MouseButton1Click:Connect(callback)
-
-	local corner = Instance.new("UICorner", button)
-	corner.CornerRadius = UDim.new(0, 8)
+local function createButton(name, callback)
+    local btn = Instance.new("TextButton")
+    btn.Text = name
+    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.BackgroundColor3 = Color3.fromRGB(255, 170, 200)
+    btn.BorderSizePixel = 0
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 14
+    btn.Parent = ButtonHolder
+    btn.MouseButton1Click:Connect(callback)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
 end
 
--- GUI PROPERTIES
-ScreenGui.Name = "ProjectReverseGUI"
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ResetOnSpawn = false
 
-Frame.Name = "MainFrame"
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+Frame.Size = UDim2.new(0, 310, 0, 440)
 Frame.Position = UDim2.new(0.3, 0, 0.2, 0)
-Frame.Size = UDim2.new(0, 310, 0, 320)
 Frame.Active = true
 Frame.Draggable = true
-
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 10)
 
-Title.Name = "Title"
 Title.Parent = Frame
 Title.BackgroundTransparency = 1
-Title.Size = UDim2.new(1, -40, 0, 30)
 Title.Position = UDim2.new(0, 10, 0, 5)
+Title.Size = UDim2.new(1, -40, 0, 30)
 Title.Text = "🌸 Project Reverse GUI"
 Title.TextColor3 = Color3.fromRGB(255, 245, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 18
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
-MinimizeButton.Name = "Minimize"
 MinimizeButton.Parent = Frame
 MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
 MinimizeButton.Position = UDim2.new(1, -35, 0, 5)
@@ -65,37 +56,46 @@ MinimizeButton.TextSize = 20
 
 local isMinimized = false
 MinimizeButton.MouseButton1Click:Connect(function()
-	isMinimized = not isMinimized
-	ButtonHolder.Visible = not isMinimized
-	Watermark.Visible = not isMinimized
+    isMinimized = not isMinimized
+    ButtonHolder.Visible = not isMinimized
+    Watermark.Visible = not isMinimized
 end)
 
-ButtonHolder.Name = "ButtonHolder"
 ButtonHolder.Parent = Frame
 ButtonHolder.BackgroundTransparency = 1
 ButtonHolder.Position = UDim2.new(0, 10, 0, 40)
-ButtonHolder.Size = UDim2.new(1, -20, 1, -70)
-
+ButtonHolder.Size = UDim2.new(1, -20, 1, -150)
 UIListLayout.Parent = ButtonHolder
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 8)
 
-Watermark.Name = "Watermark"
 Watermark.Parent = Frame
 Watermark.BackgroundTransparency = 1
+Watermark.Position = UDim2.new(0, 10, 1, -35)
 Watermark.Size = UDim2.new(1, -20, 0, 20)
-Watermark.Position = UDim2.new(0, 10, 1, -25)
 Watermark.Text = "ShinOnTop GUI"
 Watermark.TextColor3 = Color3.fromRGB(255, 200, 250)
 Watermark.Font = Enum.Font.Gotham
 Watermark.TextSize = 12
 Watermark.TextXAlignment = Enum.TextXAlignment.Right
 
--- BUTTONS
-createButton("🌀 Project Reverse Spawner Pet", "Runs Kitsune predictor script", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/DeltaScriptzHub/KitsuneV1-Predictor/refs/heads/main/ScriptManual"))()
+-- Buttons
+createButton("🌀 Project Reverse Spawner Pet", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/DeltaScriptzHub/KitsuneV1‑Predictor/refs/heads/main/ScriptManual"))()
 end)
 
-createButton("🎯 Auto Age Level 50", "Runs Luarmor AutoLevel script", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/AutoLevel/refs/heads/main/LuarmorAgeUp"))()
+createButton("🎯 Auto Age Level 50", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/AutoLevel/refs/heads/main/LuarmorAgeUp"))()
+end)
+
+createButton("🥚 Egg Randomizer", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/SrMotion666/Wezhub/refs/heads/main/WezhubRandomizer.lua"))()
+end)
+
+createButton("🧪 Pet Mutation", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/ShinGuix99/refs/heads/main/PetMutation"))()
+end)
+
+createButton("🛑 TradeFreeze", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/ShinGuix99/refs/heads/main/TradeFreeze"))()
 end)
