@@ -1,110 +1,104 @@
--- ShinOnTop GUI – Stylish Pink Theme with 4 Functional Buttons and Loading Screen
+-- ShinOnTop GUI with Pink Stylish Theme and Updated Dark Spawner Rayfield
+
+-- Services
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
 -- Loading Screen
-local screenGui = Instance.new("ScreenGui", game.CoreGui)
-screenGui.Name = "LoadingScreen"
+local loadingGui = Instance.new("ScreenGui", PlayerGui)
+loadingGui.Name = "LoadingScreen"
+loadingGui.ResetOnSpawn = false
 
-local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 300, 0, 100)
-frame.Position = UDim2.new(0.5, -150, 0.5, -50)
-frame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
-frame.BorderSizePixel = 0
+local loadingFrame = Instance.new("Frame", loadingGui)
+loadingFrame.Size = UDim2.new(0, 300, 0, 50)
+loadingFrame.Position = UDim2.new(0.5, -150, 0.5, -25)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(255, 192, 203)
+loadingFrame.BorderSizePixel = 0
 
-local uicorner = Instance.new("UICorner", frame)
-uicorner.CornerRadius = UDim.new(0, 12)
-
-local textLabel = Instance.new("TextLabel", frame)
-textLabel.Size = UDim2.new(1, 0, 1, 0)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Loading... 0%"
-textLabel.Font = Enum.Font.FredokaOne
-textLabel.TextScaled = true
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+local loadingText = Instance.new("TextLabel", loadingFrame)
+loadingText.Size = UDim2.new(1, 0, 1, 0)
+loadingText.Text = "Loading... 0%"
+loadingText.TextColor3 = Color3.fromRGB(0, 0, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Font = Enum.Font.GothamBold
+loadingText.TextScaled = true
 
 for i = 1, 100 do
-    textLabel.Text = "Loading... " .. i .. "%"
+    loadingText.Text = "Loading... " .. i .. "%"
     wait(0.02)
 end
 
-screenGui:Destroy()
+loadingGui:Destroy()
 
 -- Main GUI
-local gui = Instance.new("ScreenGui", game.CoreGui)
+local gui = Instance.new("ScreenGui", PlayerGui)
 gui.Name = "ShinOnTopGUI"
+gui.ResetOnSpawn = false
 
 local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 400, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
+mainFrame.Size = UDim2.new(0, 400, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
 mainFrame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Draggable = true
 
-local corner = Instance.new("UICorner", mainFrame)
-corner.CornerRadius = UDim.new(0, 16)
-
-local title = Instance.new("TextLabel", mainFrame)
-title.Size = UDim2.new(1, 0, 0, 50)
-title.Text = "🌸 ShinOnTop Hub 🌸"
-title.Font = Enum.Font.FredokaOne
-title.TextScaled = true
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundTransparency = 1
-
 -- Watermark
 local watermark = Instance.new("TextLabel", mainFrame)
-watermark.Size = UDim2.new(1, 0, 0, 20)
-watermark.Position = UDim2.new(0, 0, 1, -20)
-watermark.Text = "Made by: ShinOnTop"
-watermark.Font = Enum.Font.FredokaOne
-watermark.TextScaled = true
-watermark.TextColor3 = Color3.fromRGB(255, 255, 255)
+watermark.Text = "Made By: ShinOnTop"
+watermark.Position = UDim2.new(0, 10, 1, -25)
+watermark.Size = UDim2.new(0, 300, 0, 20)
 watermark.BackgroundTransparency = 1
+watermark.TextColor3 = Color3.fromRGB(120, 0, 80)
+watermark.Font = Enum.Font.Gotham
+watermark.TextSize = 14
+watermark.TextXAlignment = Enum.TextXAlignment.Left
 
--- Image (bottom)
+-- Bottom image
 local image = Instance.new("ImageLabel", mainFrame)
-image.Size = UDim2.new(0, 50, 0, 50)
-image.Position = UDim2.new(0, 10, 1, -60)
+image.Size = UDim2.new(0, 100, 0, 100)
+image.Position = UDim2.new(1, -110, 1, -110)
 image.BackgroundTransparency = 1
-image.Image = "rbxassetid://15001532647"
+image.Image = "http://www.roblox.com/asset/?id=17062020591"
 
--- Toggle Button
-local toggle = Instance.new("TextButton", gui)
-toggle.Size = UDim2.new(0, 120, 0, 35)
-toggle.Position = UDim2.new(0.5, -60, 0.9, 0)
-toggle.Text = "Minimize / Maximize"
-toggle.Font = Enum.Font.FredokaOne
-toggle.TextScaled = true
-toggle.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-local cornerToggle = Instance.new("UICorner", toggle)
-cornerToggle.CornerRadius = UDim.new(0, 12)
-
+-- Minimize Button
 local minimized = false
-toggle.MouseButton1Click:Connect(function()
+local minimizeButton = Instance.new("TextButton", mainFrame)
+minimizeButton.Text = "-"
+minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+minimizeButton.Position = UDim2.new(1, -35, 0, 5)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+minimizeButton.TextColor3 = Color3.new(0, 0, 0)
+minimizeButton.Font = Enum.Font.GothamBold
+minimizeButton.TextSize = 18
+
+minimizeButton.MouseButton1Click:Connect(function()
     minimized = not minimized
-    mainFrame.Visible = not minimized
+    for _, child in pairs(mainFrame:GetChildren()) do
+        if child ~= minimizeButton then
+            child.Visible = not minimized
+        end
+    end
 end)
 
--- Button Creator
-local function createButton(name, position, callback)
-    local btn = Instance.new("TextButton", mainFrame)
-    btn.Size = UDim2.new(0, 300, 0, 40)
-    btn.Position = position
-    btn.Text = name
-    btn.Font = Enum.Font.FredokaOne
-    btn.TextScaled = true
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-    local btnCorner = Instance.new("UICorner", btn)
-    btnCorner.CornerRadius = UDim.new(0, 10)
-    btn.MouseButton1Click:Connect(callback)
+-- Button Factory
+local function createButton(text, pos, callback)
+    local button = Instance.new("TextButton", mainFrame)
+    button.Text = text
+    button.Position = pos
+    button.Size = UDim2.new(0, 300, 0, 40)
+    button.BackgroundColor3 = Color3.fromRGB(255, 160, 200)
+    button.TextColor3 = Color3.new(0, 0, 0)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 16
+    button.MouseButton1Click:Connect(callback)
 end
 
--- Buttons
+-- Script Buttons
 createButton("🌑 Dark Spawner Rayfield", UDim2.new(0, 50, 0, 70), function()
-    local Spawner = loadstring(game:HttpGet("https://codeberg.org/GrowAFilipino/GrowAGarden/raw/branch/main/Spawner.lua"))()
+    local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
     Spawner.Load()
 end)
 
