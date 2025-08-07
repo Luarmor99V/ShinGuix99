@@ -1,115 +1,180 @@
--- ShinOnTop GUI with Pink Stylish Theme and Updated Dark Spawner Rayfield
-
--- Services
+-- // 1. Loading Screen (20 Seconds)
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
 
--- Loading Screen
 local loadingGui = Instance.new("ScreenGui", PlayerGui)
-loadingGui.Name = "LoadingScreen"
+loadingGui.Name = "PinkLoadingScreen"
+loadingGui.IgnoreGuiInset = true
 loadingGui.ResetOnSpawn = false
+loadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-local loadingFrame = Instance.new("Frame", loadingGui)
-loadingFrame.Size = UDim2.new(0, 300, 0, 50)
-loadingFrame.Position = UDim2.new(0.5, -150, 0.5, -25)
-loadingFrame.BackgroundColor3 = Color3.fromRGB(255, 192, 203)
-loadingFrame.BorderSizePixel = 0
+local bg = Instance.new("Frame", loadingGui)
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
 
-local loadingText = Instance.new("TextLabel", loadingFrame)
-loadingText.Size = UDim2.new(1, 0, 1, 0)
-loadingText.Text = "Loading... 0%"
-loadingText.TextColor3 = Color3.fromRGB(0, 0, 0)
-loadingText.BackgroundTransparency = 1
-loadingText.Font = Enum.Font.GothamBold
-loadingText.TextScaled = true
+local text = Instance.new("TextLabel", bg)
+text.AnchorPoint = Vector2.new(0.5, 0.5)
+text.Position = UDim2.new(0.5, 0, 0.5, 0)
+text.Size = UDim2.new(0.6, 0, 0.2, 0)
+text.Text = "🌸 Loading Visual Spawner... 🌸"
+text.Font = Enum.Font.FredokaOne
+text.TextScaled = true
+text.BackgroundTransparency = 1
+text.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-for i = 1, 100 do
-    loadingText.Text = "Loading... " .. i .. "%"
-    wait(0.02)
-end
+local tween = TweenService:Create(text, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+	TextColor3 = Color3.fromRGB(255, 105, 180)
+})
+tween:Play()
 
+task.wait(20)
 loadingGui:Destroy()
 
--- Main GUI
-local gui = Instance.new("ScreenGui", PlayerGui)
-gui.Name = "ShinOnTopGUI"
-gui.ResetOnSpawn = false
+-- // 2. Toggle Button to Open GUI
+local toggleGui = Instance.new("ScreenGui", PlayerGui)
+toggleGui.Name = "OpenGUI"
+toggleGui.ResetOnSpawn = false
+toggleGui.IgnoreGuiInset = true
 
-local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 400, 0, 300)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-mainFrame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
-mainFrame.BorderSizePixel = 0
-mainFrame.Active = true
-mainFrame.Draggable = true
+local toggleButton = Instance.new("TextButton", toggleGui)
+toggleButton.Size = UDim2.new(0, 120, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0.5, -20)
+toggleButton.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
+toggleButton.Text = "🌸 Open GUI"
+toggleButton.Font = Enum.Font.GothamBold
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.TextScaled = true
+toggleButton.BorderSizePixel = 0
 
--- Watermark
-local watermark = Instance.new("TextLabel", mainFrame)
-watermark.Text = "Made By: ShinOnTop"
-watermark.Position = UDim2.new(0, 10, 1, -25)
-watermark.Size = UDim2.new(0, 300, 0, 20)
-watermark.BackgroundTransparency = 1
-watermark.TextColor3 = Color3.fromRGB(120, 0, 80)
-watermark.Font = Enum.Font.Gotham
-watermark.TextSize = 14
-watermark.TextXAlignment = Enum.TextXAlignment.Left
+-- // 3. Load Rayfield & Spawner
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
 
--- Bottom image
-local image = Instance.new("ImageLabel", mainFrame)
-image.Size = UDim2.new(0, 100, 0, 100)
-image.Position = UDim2.new(1, -110, 1, -110)
-image.BackgroundTransparency = 1
-image.Image = "http://www.roblox.com/asset/?id=17062020591"
+-- Defer GUI creation
+local guiOpened = false
 
--- Minimize Button
-local minimized = false
-local minimizeButton = Instance.new("TextButton", mainFrame)
-minimizeButton.Text = "-"
-minimizeButton.Size = UDim2.new(0, 30, 0, 30)
-minimizeButton.Position = UDim2.new(1, -35, 0, 5)
-minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-minimizeButton.TextColor3 = Color3.new(0, 0, 0)
-minimizeButton.Font = Enum.Font.GothamBold
-minimizeButton.TextSize = 18
+toggleButton.MouseButton1Click:Connect(function()
+	if guiOpened then return end
+	guiOpened = true
+	toggleButton.Text = "✅ GUI Loaded"
 
-minimizeButton.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    for _, child in pairs(mainFrame:GetChildren()) do
-        if child ~= minimizeButton then
-            child.Visible = not minimized
-        end
-    end
-end)
+	Spawner.Load()
+	local Pets = Spawner.GetPets()
+	local Seeds = Spawner.GetSeeds()
+	local Eggs = Spawner.GetEggs()
 
--- Button Factory
-local function createButton(text, pos, callback)
-    local button = Instance.new("TextButton", mainFrame)
-    button.Text = text
-    button.Position = pos
-    button.Size = UDim2.new(0, 300, 0, 40)
-    button.BackgroundColor3 = Color3.fromRGB(255, 160, 200)
-    button.TextColor3 = Color3.new(0, 0, 0)
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 16
-    button.MouseButton1Click:Connect(callback)
-end
+	local Window = Rayfield:CreateWindow({
+		Name = "🌸 Visual Spawner GUI",
+		LoadingTitle = "Spawner Menu",
+		LoadingSubtitle = "by ShinOnTop",
+		ConfigurationSaving = {
+			Enabled = true,
+			FolderName = "VisualSpawner",
+			FileName = "SpawnerConfig"
+		},
+		KeySystem = false
+	})
 
--- Script Buttons
-createButton("🌑 Dark Spawner Rayfield", UDim2.new(0, 50, 0, 70), function()
-    local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
-    Spawner.Load()
-end)
+	-- PINK THEME BACKGROUND: Add a full pink background behind GUI
+	local bgGui = Instance.new("ScreenGui", PlayerGui)
+	bgGui.Name = "PinkBG"
+	bgGui.DisplayOrder = -10 -- Ensure it's behind Rayfield
+	bgGui.ResetOnSpawn = false
 
-createButton("🎲 Egg Randomizer", UDim2.new(0, 50, 0, 120), function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/ShinGuix99/refs/heads/main/EggRandomizer"))()
-end)
+	local bgFrame = Instance.new("Frame", bgGui)
+	bgFrame.Size = UDim2.new(1, 0, 1, 0)
+	bgFrame.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
 
-createButton("🧬 Pet Mutation Finder", UDim2.new(0, 50, 0, 170), function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/ShinGuix99/refs/heads/main/PetMutation"))()
-end)
+	-- WATERMARK in corner
+	local watermark = Instance.new("TextLabel", bgGui)
+	watermark.Text = "Made By: ShinOnTop"
+	watermark.Size = UDim2.new(0, 200, 0, 25)
+	watermark.Position = UDim2.new(1, -210, 1, -30)
+	watermark.BackgroundTransparency = 1
+	watermark.TextColor3 = Color3.fromRGB(255, 105, 180)
+	watermark.Font = Enum.Font.GothamSemibold
+	watermark.TextSize = 16
+	watermark.TextXAlignment = Enum.TextXAlignment.Right
 
-createButton("❄️ Trade Freeze", UDim2.new(0, 50, 0, 220), function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Luarmor99V/ShinGuix99/refs/heads/main/TradeFreeze"))()
+	local MainTab = Window:CreateTab("Spawner", 4483362458)
+
+	local selectedPet = Pets[1]
+	local petWeight = 1
+	local petAge = 1
+
+	MainTab:CreateDropdown({
+		Name = "Select Pet",
+		Options = Pets,
+		CurrentOption = selectedPet,
+		Callback = function(option)
+			selectedPet = option
+		end,
+	})
+
+	MainTab:CreateSlider({
+		Name = "Pet Weight (KG)",
+		Range = {1, 100},
+		Increment = 1,
+		CurrentValue = 1,
+		Callback = function(Value)
+			petWeight = Value
+		end,
+	})
+
+	MainTab:CreateSlider({
+		Name = "Pet Age",
+		Range = {1, 100},
+		Increment = 1,
+		CurrentValue = 1,
+		Callback = function(Value)
+			petAge = Value
+		end,
+	})
+
+	MainTab:CreateButton({
+		Name = "Spawn Selected Pet",
+		Callback = function()
+			Spawner.SpawnPet(selectedPet, petWeight, petAge)
+			Rayfield:Notify({Title = "Spawner", Content = "Spawned "..selectedPet.."!", Duration = 4})
+		end
+	})
+
+	MainTab:CreateDropdown({
+		Name = "Spawn Seed",
+		Options = Seeds,
+		CurrentOption = Seeds[1],
+		Callback = function(seed)
+			Spawner.SpawnSeed(seed)
+			Rayfield:Notify({Title = "Spawner", Content = "Spawned "..seed.."!", Duration = 4})
+		end
+	})
+
+	MainTab:CreateDropdown({
+		Name = "Spawn Egg",
+		Options = Eggs,
+		CurrentOption = Eggs[1],
+		Callback = function(egg)
+			Spawner.SpawnEgg(egg)
+			Rayfield:Notify({Title = "Spawner", Content = "Spawned "..egg.."!", Duration = 4})
+		end
+	})
+
+	MainTab:CreateDropdown({
+		Name = "Spin Seed",
+		Options = Seeds,
+		CurrentOption = Seeds[1],
+		Callback = function(seed)
+			Spawner.Spin(seed)
+			Rayfield:Notify({Title = "Spawner", Content = "Spun "..seed.."!", Duration = 4})
+		end
+	})
+
+	MainTab:CreateButton({
+		Name = "Load Spawner UI",
+		Callback = function()
+			Spawner.Load()
+		end
+	})
 end)
