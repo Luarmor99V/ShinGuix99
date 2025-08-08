@@ -1,157 +1,153 @@
--- 🌸 ShinOnTop Pink Spawner GUI
+-- 🌸 Loading Screen First
+local player = game.Players.LocalPlayer
 
--- Fullscreen Loading Screen (30s)
-local loading = Instance.new("ScreenGui", game.CoreGui)
-loading.IgnoreGuiInset = true
-loading.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-loading.Name = "🌸Your Spawner Is Executed Please Wait to Load...🌸"
+local loadingGui = Instance.new("ScreenGui")
+loadingGui.Name = "LoadingScreen"
+loadingGui.IgnoreGuiInset = true
+loadingGui.ResetOnSpawn = false
+loadingGui.Parent = player:WaitForChild("PlayerGui")
 
-local bg = Instance.new("Frame", loading)
-bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
+local background = Instance.new("Frame")
+background.Size = UDim2.new(1, 0, 1, 0)
+background.BackgroundColor3 = Color3.fromRGB(255, 182, 193) -- Pink
+background.BorderSizePixel = 0
+background.Parent = loadingGui
 
-local txt = Instance.new("TextLabel", bg)
-txt.Size = UDim2.new(1, 0, 1, 0)
-txt.Text = "🌸 ShinOnTop Spawner Hub 🌸\nLoading..."
-txt.Font = Enum.Font.FredokaOne
-txt.TextSize = 40
-txt.TextColor3 = Color3.new(1, 1, 1)
-txt.BackgroundTransparency = 1
-txt.TextScaled = true
+local message = Instance.new("TextLabel")
+message.Size = UDim2.new(1, 0, 0, 50)
+message.Position = UDim2.new(0, 0, 0.5, -25)
+message.BackgroundTransparency = 1
+message.Text = "🌸 Script is now executed. Please wait..."
+message.TextColor3 = Color3.fromRGB(255, 255, 255)
+message.Font = Enum.Font.GothamBold
+message.TextScaled = true
+message.Parent = background
 
-task.wait(30)
-loading:Destroy()
+-- Wait 30 seconds, fade out, then show GUI
+task.delay(30, function()
+    for i = 1, 30 do
+        background.BackgroundTransparency = i / 30
+        message.TextTransparency = i / 30
+        task.wait(1/30)
+    end
+    loadingGui:Destroy()
 
--- Load Spawner
-local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
-Spawner.Load()
+    -- 🌸 ShinOnTOP Hub GUI appears after loading
 
--- Create Main GUI
-local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "SpawnerPinkGUI"
+    -- Load Spawner
+    local success, Spawner = pcall(function()
+        return loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
+    end)
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 400, 0, 350)
-frame.Position = UDim2.new(0.5, -200, 0.5, -175)
-frame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
-frame.Visible = false
-frame.ClipsDescendants = true
-frame.Draggable = true
-frame.Active = true
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+    if not success then
+        warn("Failed to load Spawner script.")
+        return
+    end
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Text = "🌸 ShinOnTop Spawner Hub"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 22
-title.TextColor3 = Color3.new(1, 1, 1)
-title.BackgroundTransparency = 1
+    -- Create GUI
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "ShinOnTOPHubGui"
+    gui.ResetOnSpawn = false
+    gui.Parent = player:WaitForChild("PlayerGui")
 
-local watermark = Instance.new("TextLabel", frame)
-watermark.Size = UDim2.new(1, 0, 0, 20)
-watermark.Position = UDim2.new(0, 0, 1, -20)
-watermark.Text = "Made by: ShinOnTop"
-watermark.Font = Enum.Font.Gotham
-watermark.TextSize = 14
-watermark.TextColor3 = Color3.new(1,1,1)
-watermark.BackgroundTransparency = 1
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 350, 0, 500)
+    frame.Position = UDim2.new(0, 100, 0, 100)
+    frame.BackgroundColor3 = Color3.fromRGB(255, 182, 193) -- Light pink
+    frame.BorderSizePixel = 0
+    frame.Parent = gui
+    frame.Active = true
+    frame.Draggable = true
 
--- Toggle Button
-local toggle = Instance.new("TextButton", gui)
-toggle.Size = UDim2.new(0, 120, 0, 40)
-toggle.Position = UDim2.new(0, 10, 0.5, -20)
-toggle.Text = "🌸 Open UI"
-toggle.Font = Enum.Font.GothamBold
-toggle.TextSize = 18
-toggle.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
-toggle.TextColor3 = Color3.new(1, 1, 1)
-Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 8)
-toggle.MouseButton1Click:Connect(function()
-	frame.Visible = not frame.Visible
-end)
+    local corner = Instance.new("UICorner", frame)
+    corner.CornerRadius = UDim.new(0, 12)
 
--- Dropdown helper
-local function createDropdown(parent, titleText, getOptionsFunc, onSelect)
-	local label = Instance.new("TextLabel", parent)
-	label.Text = titleText
-	label.Font = Enum.Font.Gotham
-	label.TextSize = 14
-	label.TextColor3 = Color3.new(1,1,1)
-	label.BackgroundTransparency = 1
-	label.Size = UDim2.new(1, -20, 0, 20)
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.BackgroundTransparency = 1
+    title.Text = "🌸 ShinOnTOP Hub Gui"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 22
+    title.TextStrokeTransparency = 0.5
 
-	local dropdown = Instance.new("TextButton", parent)
-	dropdown.Size = UDim2.new(1, -20, 0, 30)
-	dropdown.Position = UDim2.new(0, 10, 0, label.Position.Y.Offset + 20)
-	dropdown.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
-	dropdown.Text = "Select..."
-	dropdown.TextColor3 = Color3.new(1,1,1)
-	dropdown.Font = Enum.Font.Gotham
-	dropdown.TextSize = 14
-	Instance.new("UICorner", dropdown)
+    local layout = Instance.new("UIListLayout", frame)
+    layout.Padding = UDim.new(0, 8)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
-	dropdown.MouseButton1Click:Connect(function()
-		local opts = getOptionsFunc()
-		for _, name in ipairs(opts) do
-			local btn = Instance.new("TextButton", parent)
-			btn.Size = UDim2.new(1, -20, 0, 25)
-			btn.Position = UDim2.new(0, 10, 0, dropdown.Position.Y.Offset + 35 + (_-1)*28)
-			btn.BackgroundColor3 = Color3.fromRGB(255, 200, 210)
-			btn.Text = name
-			btn.TextColor3 = Color3.new(1,1,1)
-			btn.Font = Enum.Font.Gotham
-			btn.TextSize = 14
-			Instance.new("UICorner", btn)
+    local padding = Instance.new("UIPadding", frame)
+    padding.PaddingTop = UDim.new(0, 50)
+    padding.PaddingLeft = UDim.new(0, 10)
+    padding.PaddingRight = UDim.new(0, 10)
 
-			btn.MouseButton1Click:Connect(function()
-				onSelect(name)
-				btn:Destroy()
-			end)
-			task.delay(5, function() if btn and btn.Parent then btn:Destroy() end end)
-		end
-	end)
-end
+    local function createTextBox(placeholder)
+        local box = Instance.new("TextBox")
+        box.Size = UDim2.new(1, -20, 0, 30)
+        box.PlaceholderText = placeholder
+        box.Text = ""
+        box.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+        box.TextColor3 = Color3.fromRGB(50, 50, 50)
+        box.Font = Enum.Font.Gotham
+        box.TextSize = 14
+        box.ClearTextOnFocus = false
+        box.Parent = frame
 
--- KG and Age Inputs
-local kgBox = Instance.new("TextBox", frame)
-kgBox.Size = UDim2.new(0.45, -15, 0, 30)
-kgBox.Position = UDim2.new(0.025, 0, 0.2, 0)
-kgBox.PlaceholderText = "Pet KG"
-kgBox.BackgroundColor3 = Color3.fromRGB(255, 200, 210)
-kgBox.Font = Enum.Font.Gotham
-kgBox.TextColor3 = Color3.new(1,1,1)
-kgBox.TextSize = 14
-Instance.new("UICorner", kgBox)
+        local corner = Instance.new("UICorner", box)
+        corner.CornerRadius = UDim.new(0, 6)
 
-local ageBox = Instance.new("TextBox", frame)
-ageBox.Size = UDim2.new(0.45, -15, 0, 30)
-ageBox.Position = UDim2.new(0.525, 0, 0.2, 0)
-ageBox.PlaceholderText = "Pet Age"
-ageBox.BackgroundColor3 = Color3.fromRGB(255, 200, 210)
-ageBox.Font = Enum.Font.Gotham
-ageBox.TextColor3 = Color3.new(1,1,1)
-ageBox.TextSize = 14
-Instance.new("UICorner", ageBox)
+        return box
+    end
 
--- Pet Dropdown
-createDropdown(frame, "Spawn Pet", Spawner.GetPets, function(name)
-	local kg = tonumber(kgBox.Text) or 1
-	local age = tonumber(ageBox.Text) or 1
-	Spawner.SpawnPet(name, kg, age)
-end)
+    local function createButton(text, callback)
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, -20, 0, 35)
+        button.Text = text
+        button.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Font = Enum.Font.GothamBold
+        button.TextSize = 16
+        button.Parent = frame
 
--- Seed Dropdown
-createDropdown(frame, "Spawn Seed", Spawner.GetSeeds, function(name)
-	Spawner.SpawnSeed(name)
-end)
+        local corner = Instance.new("UICorner", button)
+        corner.CornerRadius = UDim.new(0, 6)
 
--- Egg Dropdown
-createDropdown(frame, "Spawn Egg", Spawner.GetEggs, function(name)
-	Spawner.SpawnEgg(name)
-end)
+        button.MouseButton1Click:Connect(callback)
+    end
 
--- Spin Dropdown
-createDropdown(frame, "Spin Plant", Spawner.GetSeeds, function(name)
-	Spawner.Spin(name)
+    -- Input Fields
+    local petBox = createTextBox("Pet Name (e.g. Raccoon)")
+    local kgBox = createTextBox("Pet KG (e.g. 1)")
+    local ageBox = createTextBox("Pet Age (e.g. 2)")
+    local seedBox = createTextBox("Seed Name (e.g. Candy Blossom)")
+    local eggBox = createTextBox("Egg Name (e.g. Night Egg)")
+    local spinBox = createTextBox("Spin Name (e.g. Sunflower)")
+
+    -- Buttons
+    createButton("Spawn Pet", function()
+        local pet = petBox.Text
+        local kg = tonumber(kgBox.Text) or 1
+        local age = tonumber(ageBox.Text) or 1
+        Spawner.SpawnPet(pet, kg, age)
+    end)
+
+    createButton("Spawn Seed", function()
+        local seed = seedBox.Text
+        Spawner.SpawnSeed(seed)
+    end)
+
+    createButton("Spawn Egg", function()
+        local egg = eggBox.Text
+        Spawner.SpawnEgg(egg)
+    end)
+
+    createButton("Spin", function()
+        local spin = spinBox.Text
+        Spawner.Spin(spin)
+    end)
+
+    createButton("Load Default UI", function()
+        Spawner.Load()
+    end)
 end)
