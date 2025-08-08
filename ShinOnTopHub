@@ -1,112 +1,157 @@
--- Pink GUI for Spawner Script | Made By: ShinOnTop
+-- 🌸 ShinOnTop Pink Spawner GUI
 
--- Loading Screen (20s)
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 300, 0, 100)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -50)
-Frame.BackgroundColor3 = Color3.fromRGB(255, 192, 203)
+-- Fullscreen Loading Screen (30s)
+local loading = Instance.new("ScreenGui", game.CoreGui)
+loading.IgnoreGuiInset = true
+loading.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+loading.Name = "🌸Your Spawner Is Executed Please Wait to Load...🌸"
 
-local TextLabel = Instance.new("TextLabel", Frame)
-TextLabel.Size = UDim2.new(1, 0, 1, 0)
-TextLabel.BackgroundTransparency = 1
-TextLabel.Text = "🌸 Loading ShinSpawner GUI... 🌸"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.TextScaled = true
+local bg = Instance.new("Frame", loading)
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
 
-wait(20)
-ScreenGui:Destroy()
+local txt = Instance.new("TextLabel", bg)
+txt.Size = UDim2.new(1, 0, 1, 0)
+txt.Text = "🌸 ShinOnTop Spawner Hub 🌸\nLoading..."
+txt.Font = Enum.Font.FredokaOne
+txt.TextSize = 40
+txt.TextColor3 = Color3.new(1, 1, 1)
+txt.BackgroundTransparency = 1
+txt.TextScaled = true
 
--- Load Spawner Script
+task.wait(30)
+loading:Destroy()
+
+-- Load Spawner
 local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
+Spawner.Load()
 
--- GUI Creation
-local Gui = Instance.new("ScreenGui", game.CoreGui)
-Gui.Name = "ShinSpawnerGui"
+-- Create Main GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "SpawnerPinkGUI"
 
-local Main = Instance.new("Frame", Gui)
-Main.Size = UDim2.new(0, 400, 0, 300)
-Main.Position = UDim2.new(0.5, -200, 0.5, -150)
-Main.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 350)
+frame.Position = UDim2.new(0.5, -200, 0.5, -175)
+frame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
+frame.Visible = false
+frame.ClipsDescendants = true
+frame.Draggable = true
+frame.Active = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
--- Title
-local Title = Instance.new("TextLabel", Main)
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Text = "🌸 Shin Spawner GUI 🌸"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-Title.TextScaled = true
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Text = "🌸 ShinOnTop Spawner Hub"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.TextColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
 
--- Watermark
-local Watermark = Instance.new("TextLabel", Main)
-Watermark.Size = UDim2.new(1, -10, 0, 20)
-Watermark.Position = UDim2.new(0, 5, 1, -25)
-Watermark.Text = "Made By: ShinOnTop"
-Watermark.TextColor3 = Color3.fromRGB(200, 200, 200)
-Watermark.BackgroundTransparency = 1
-Watermark.TextSize = 14
-Watermark.TextXAlignment = Enum.TextXAlignment.Right
+local watermark = Instance.new("TextLabel", frame)
+watermark.Size = UDim2.new(1, 0, 0, 20)
+watermark.Position = UDim2.new(0, 0, 1, -20)
+watermark.Text = "Made by: ShinOnTop"
+watermark.Font = Enum.Font.Gotham
+watermark.TextSize = 14
+watermark.TextColor3 = Color3.new(1,1,1)
+watermark.BackgroundTransparency = 1
 
--- Function Creator
-local function CreateButton(text, posY, callback)
-	local btn = Instance.new("TextButton", Main)
-	btn.Size = UDim2.new(0, 360, 0, 30)
-	btn.Position = UDim2.new(0, 20, 0, posY)
-	btn.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
-	btn.Text = text
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.TextScaled = true
-	btn.MouseButton1Click:Connect(callback)
+-- Toggle Button
+local toggle = Instance.new("TextButton", gui)
+toggle.Size = UDim2.new(0, 120, 0, 40)
+toggle.Position = UDim2.new(0, 10, 0.5, -20)
+toggle.Text = "🌸 Open UI"
+toggle.Font = Enum.Font.GothamBold
+toggle.TextSize = 18
+toggle.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
+toggle.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 8)
+toggle.MouseButton1Click:Connect(function()
+	frame.Visible = not frame.Visible
+end)
+
+-- Dropdown helper
+local function createDropdown(parent, titleText, getOptionsFunc, onSelect)
+	local label = Instance.new("TextLabel", parent)
+	label.Text = titleText
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 14
+	label.TextColor3 = Color3.new(1,1,1)
+	label.BackgroundTransparency = 1
+	label.Size = UDim2.new(1, -20, 0, 20)
+
+	local dropdown = Instance.new("TextButton", parent)
+	dropdown.Size = UDim2.new(1, -20, 0, 30)
+	dropdown.Position = UDim2.new(0, 10, 0, label.Position.Y.Offset + 20)
+	dropdown.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
+	dropdown.Text = "Select..."
+	dropdown.TextColor3 = Color3.new(1,1,1)
+	dropdown.Font = Enum.Font.Gotham
+	dropdown.TextSize = 14
+	Instance.new("UICorner", dropdown)
+
+	dropdown.MouseButton1Click:Connect(function()
+		local opts = getOptionsFunc()
+		for _, name in ipairs(opts) do
+			local btn = Instance.new("TextButton", parent)
+			btn.Size = UDim2.new(1, -20, 0, 25)
+			btn.Position = UDim2.new(0, 10, 0, dropdown.Position.Y.Offset + 35 + (_-1)*28)
+			btn.BackgroundColor3 = Color3.fromRGB(255, 200, 210)
+			btn.Text = name
+			btn.TextColor3 = Color3.new(1,1,1)
+			btn.Font = Enum.Font.Gotham
+			btn.TextSize = 14
+			Instance.new("UICorner", btn)
+
+			btn.MouseButton1Click:Connect(function()
+				onSelect(name)
+				btn:Destroy()
+			end)
+			task.delay(5, function() if btn and btn.Parent then btn:Destroy() end end)
+		end
+	end)
 end
 
--- Buttons
-CreateButton("Spawn Pet: Raccoon (1KG, 2 Age)", 50, function()
-	Spawner.SpawnPet("Raccoon", 1, 2)
+-- KG and Age Inputs
+local kgBox = Instance.new("TextBox", frame)
+kgBox.Size = UDim2.new(0.45, -15, 0, 30)
+kgBox.Position = UDim2.new(0.025, 0, 0.2, 0)
+kgBox.PlaceholderText = "Pet KG"
+kgBox.BackgroundColor3 = Color3.fromRGB(255, 200, 210)
+kgBox.Font = Enum.Font.Gotham
+kgBox.TextColor3 = Color3.new(1,1,1)
+kgBox.TextSize = 14
+Instance.new("UICorner", kgBox)
+
+local ageBox = Instance.new("TextBox", frame)
+ageBox.Size = UDim2.new(0.45, -15, 0, 30)
+ageBox.Position = UDim2.new(0.525, 0, 0.2, 0)
+ageBox.PlaceholderText = "Pet Age"
+ageBox.BackgroundColor3 = Color3.fromRGB(255, 200, 210)
+ageBox.Font = Enum.Font.Gotham
+ageBox.TextColor3 = Color3.new(1,1,1)
+ageBox.TextSize = 14
+Instance.new("UICorner", ageBox)
+
+-- Pet Dropdown
+createDropdown(frame, "Spawn Pet", Spawner.GetPets, function(name)
+	local kg = tonumber(kgBox.Text) or 1
+	local age = tonumber(ageBox.Text) or 1
+	Spawner.SpawnPet(name, kg, age)
 end)
 
-CreateButton("Spawn Seed: Candy Blossom", 90, function()
-	Spawner.SpawnSeed("Candy Blossom")
+-- Seed Dropdown
+createDropdown(frame, "Spawn Seed", Spawner.GetSeeds, function(name)
+	Spawner.SpawnSeed(name)
 end)
 
-CreateButton("Spawn Egg: Night Egg", 130, function()
-	Spawner.SpawnEgg("Night Egg")
+-- Egg Dropdown
+createDropdown(frame, "Spawn Egg", Spawner.GetEggs, function(name)
+	Spawner.SpawnEgg(name)
 end)
 
-CreateButton("Spin: Sunflower", 170, function()
-	Spawner.Spin("Sunflower")
-end)
-
-CreateButton("Load Default UI", 210, function()
-	Spawner.Load()
-end)
-
--- Minimize/Maximize
-local ToggleBtn = Instance.new("TextButton", Gui)
-ToggleBtn.Size = UDim2.new(0, 100, 0, 30)
-ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
-ToggleBtn.Text = "Open GUI"
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.Visible = false
-
-local function toggleGui()
-	Main.Visible = not Main.Visible
-	ToggleBtn.Text = Main.Visible and "Hide GUI" or "Open GUI"
-end
-
-ToggleBtn.MouseButton1Click:Connect(toggleGui)
-
-local Minimize = Instance.new("TextButton", Main)
-Minimize.Size = UDim2.new(0, 80, 0, 25)
-Minimize.Position = UDim2.new(1, -90, 0, 10)
-Minimize.Text = "Minimize"
-Minimize.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-Minimize.MouseButton1Click:Connect(function()
-	Main.Visible = false
-	ToggleBtn.Visible = true
+-- Spin Dropdown
+createDropdown(frame, "Spin Plant", Spawner.GetSeeds, function(name)
+	Spawner.Spin(name)
 end)
