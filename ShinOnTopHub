@@ -1,180 +1,112 @@
--- // 1. Loading Screen (20 Seconds)
-local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
+-- Pink GUI for Spawner Script | Made By: ShinOnTop
 
-local loadingGui = Instance.new("ScreenGui", PlayerGui)
-loadingGui.Name = "PinkLoadingScreen"
-loadingGui.IgnoreGuiInset = true
-loadingGui.ResetOnSpawn = false
-loadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+-- Loading Screen (20s)
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 300, 0, 100)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -50)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 192, 203)
 
-local bg = Instance.new("Frame", loadingGui)
-bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
+local TextLabel = Instance.new("TextLabel", Frame)
+TextLabel.Size = UDim2.new(1, 0, 1, 0)
+TextLabel.BackgroundTransparency = 1
+TextLabel.Text = "🌸 Loading ShinSpawner GUI... 🌸"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextScaled = true
 
-local text = Instance.new("TextLabel", bg)
-text.AnchorPoint = Vector2.new(0.5, 0.5)
-text.Position = UDim2.new(0.5, 0, 0.5, 0)
-text.Size = UDim2.new(0.6, 0, 0.2, 0)
-text.Text = "🌸 Loading Visual Spawner... 🌸"
-text.Font = Enum.Font.FredokaOne
-text.TextScaled = true
-text.BackgroundTransparency = 1
-text.TextColor3 = Color3.fromRGB(255, 255, 255)
+wait(20)
+ScreenGui:Destroy()
 
-local tween = TweenService:Create(text, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-	TextColor3 = Color3.fromRGB(255, 105, 180)
-})
-tween:Play()
-
-task.wait(20)
-loadingGui:Destroy()
-
--- // 2. Toggle Button to Open GUI
-local toggleGui = Instance.new("ScreenGui", PlayerGui)
-toggleGui.Name = "OpenGUI"
-toggleGui.ResetOnSpawn = false
-toggleGui.IgnoreGuiInset = true
-
-local toggleButton = Instance.new("TextButton", toggleGui)
-toggleButton.Size = UDim2.new(0, 120, 0, 40)
-toggleButton.Position = UDim2.new(0, 10, 0.5, -20)
-toggleButton.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
-toggleButton.Text = "🌸 Open GUI"
-toggleButton.Font = Enum.Font.GothamBold
-toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.TextScaled = true
-toggleButton.BorderSizePixel = 0
-
--- // 3. Load Rayfield & Spawner
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+-- Load Spawner Script
 local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
 
--- Defer GUI creation
-local guiOpened = false
+-- GUI Creation
+local Gui = Instance.new("ScreenGui", game.CoreGui)
+Gui.Name = "ShinSpawnerGui"
 
-toggleButton.MouseButton1Click:Connect(function()
-	if guiOpened then return end
-	guiOpened = true
-	toggleButton.Text = "✅ GUI Loaded"
+local Main = Instance.new("Frame", Gui)
+Main.Size = UDim2.new(0, 400, 0, 300)
+Main.Position = UDim2.new(0.5, -200, 0.5, -150)
+Main.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.Draggable = true
 
+-- Title
+local Title = Instance.new("TextLabel", Main)
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Text = "🌸 Shin Spawner GUI 🌸"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+Title.TextScaled = true
+
+-- Watermark
+local Watermark = Instance.new("TextLabel", Main)
+Watermark.Size = UDim2.new(1, -10, 0, 20)
+Watermark.Position = UDim2.new(0, 5, 1, -25)
+Watermark.Text = "Made By: ShinOnTop"
+Watermark.TextColor3 = Color3.fromRGB(200, 200, 200)
+Watermark.BackgroundTransparency = 1
+Watermark.TextSize = 14
+Watermark.TextXAlignment = Enum.TextXAlignment.Right
+
+-- Function Creator
+local function CreateButton(text, posY, callback)
+	local btn = Instance.new("TextButton", Main)
+	btn.Size = UDim2.new(0, 360, 0, 30)
+	btn.Position = UDim2.new(0, 20, 0, posY)
+	btn.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.TextScaled = true
+	btn.MouseButton1Click:Connect(callback)
+end
+
+-- Buttons
+CreateButton("Spawn Pet: Raccoon (1KG, 2 Age)", 50, function()
+	Spawner.SpawnPet("Raccoon", 1, 2)
+end)
+
+CreateButton("Spawn Seed: Candy Blossom", 90, function()
+	Spawner.SpawnSeed("Candy Blossom")
+end)
+
+CreateButton("Spawn Egg: Night Egg", 130, function()
+	Spawner.SpawnEgg("Night Egg")
+end)
+
+CreateButton("Spin: Sunflower", 170, function()
+	Spawner.Spin("Sunflower")
+end)
+
+CreateButton("Load Default UI", 210, function()
 	Spawner.Load()
-	local Pets = Spawner.GetPets()
-	local Seeds = Spawner.GetSeeds()
-	local Eggs = Spawner.GetEggs()
+end)
 
-	local Window = Rayfield:CreateWindow({
-		Name = "🌸 Visual Spawner GUI",
-		LoadingTitle = "Spawner Menu",
-		LoadingSubtitle = "by ShinOnTop",
-		ConfigurationSaving = {
-			Enabled = true,
-			FolderName = "VisualSpawner",
-			FileName = "SpawnerConfig"
-		},
-		KeySystem = false
-	})
+-- Minimize/Maximize
+local ToggleBtn = Instance.new("TextButton", Gui)
+ToggleBtn.Size = UDim2.new(0, 100, 0, 30)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+ToggleBtn.Text = "Open GUI"
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 160, 180)
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.Visible = false
 
-	-- PINK THEME BACKGROUND: Add a full pink background behind GUI
-	local bgGui = Instance.new("ScreenGui", PlayerGui)
-	bgGui.Name = "PinkBG"
-	bgGui.DisplayOrder = -10 -- Ensure it's behind Rayfield
-	bgGui.ResetOnSpawn = false
+local function toggleGui()
+	Main.Visible = not Main.Visible
+	ToggleBtn.Text = Main.Visible and "Hide GUI" or "Open GUI"
+end
 
-	local bgFrame = Instance.new("Frame", bgGui)
-	bgFrame.Size = UDim2.new(1, 0, 1, 0)
-	bgFrame.BackgroundColor3 = Color3.fromRGB(255, 200, 220)
+ToggleBtn.MouseButton1Click:Connect(toggleGui)
 
-	-- WATERMARK in corner
-	local watermark = Instance.new("TextLabel", bgGui)
-	watermark.Text = "Made By: ShinOnTop"
-	watermark.Size = UDim2.new(0, 200, 0, 25)
-	watermark.Position = UDim2.new(1, -210, 1, -30)
-	watermark.BackgroundTransparency = 1
-	watermark.TextColor3 = Color3.fromRGB(255, 105, 180)
-	watermark.Font = Enum.Font.GothamSemibold
-	watermark.TextSize = 16
-	watermark.TextXAlignment = Enum.TextXAlignment.Right
+local Minimize = Instance.new("TextButton", Main)
+Minimize.Size = UDim2.new(0, 80, 0, 25)
+Minimize.Position = UDim2.new(1, -90, 0, 10)
+Minimize.Text = "Minimize"
+Minimize.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-	local MainTab = Window:CreateTab("Spawner", 4483362458)
-
-	local selectedPet = Pets[1]
-	local petWeight = 1
-	local petAge = 1
-
-	MainTab:CreateDropdown({
-		Name = "Select Pet",
-		Options = Pets,
-		CurrentOption = selectedPet,
-		Callback = function(option)
-			selectedPet = option
-		end,
-	})
-
-	MainTab:CreateSlider({
-		Name = "Pet Weight (KG)",
-		Range = {1, 100},
-		Increment = 1,
-		CurrentValue = 1,
-		Callback = function(Value)
-			petWeight = Value
-		end,
-	})
-
-	MainTab:CreateSlider({
-		Name = "Pet Age",
-		Range = {1, 100},
-		Increment = 1,
-		CurrentValue = 1,
-		Callback = function(Value)
-			petAge = Value
-		end,
-	})
-
-	MainTab:CreateButton({
-		Name = "Spawn Selected Pet",
-		Callback = function()
-			Spawner.SpawnPet(selectedPet, petWeight, petAge)
-			Rayfield:Notify({Title = "Spawner", Content = "Spawned "..selectedPet.."!", Duration = 4})
-		end
-	})
-
-	MainTab:CreateDropdown({
-		Name = "Spawn Seed",
-		Options = Seeds,
-		CurrentOption = Seeds[1],
-		Callback = function(seed)
-			Spawner.SpawnSeed(seed)
-			Rayfield:Notify({Title = "Spawner", Content = "Spawned "..seed.."!", Duration = 4})
-		end
-	})
-
-	MainTab:CreateDropdown({
-		Name = "Spawn Egg",
-		Options = Eggs,
-		CurrentOption = Eggs[1],
-		Callback = function(egg)
-			Spawner.SpawnEgg(egg)
-			Rayfield:Notify({Title = "Spawner", Content = "Spawned "..egg.."!", Duration = 4})
-		end
-	})
-
-	MainTab:CreateDropdown({
-		Name = "Spin Seed",
-		Options = Seeds,
-		CurrentOption = Seeds[1],
-		Callback = function(seed)
-			Spawner.Spin(seed)
-			Rayfield:Notify({Title = "Spawner", Content = "Spun "..seed.."!", Duration = 4})
-		end
-	})
-
-	MainTab:CreateButton({
-		Name = "Load Spawner UI",
-		Callback = function()
-			Spawner.Load()
-		end
-	})
+Minimize.MouseButton1Click:Connect(function()
+	Main.Visible = false
+	ToggleBtn.Visible = true
 end)
